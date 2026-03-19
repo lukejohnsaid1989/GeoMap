@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import pydeck as pdk
+import folium
+from streamlit_folium import st_folium
 
 # ─────────────────────────────
 # Page setup
@@ -42,47 +43,45 @@ selected_sources = st.sidebar.multiselect("Select sources:", sources, default=so
 df_map_filtered = df_map[
     (df_map['event_type'].isin(selected_types)) &
     (df_map['source'].isin(selected_sources))
-].copy()  # avoid SettingWithCopyWarning
+].copy()
 
 # Color mapping by event type
 color_map = {
-    'conflict': [255, 0, 0, 160],    # Red
-    'military': [0, 0, 255, 160],    # Blue
-    'diplomacy': [0, 255, 0, 160],   # Green
+    'conflict': 'red',
+    'military': 'blue',
+    'diplomacy': 'green',
 }
 
-df_map_filtered['color'] = df_map_filtered['event_type'].map(lambda x: color_map.get(x, [200, 200, 200, 160]))
-
 # ─────────────────────────────
-# Map visualization
+# Create Folium map
 st.subheader("Map View")
 if not df_map_filtered.empty:
-    deck = pdk.Deck(
-        map_style="road",  # default map style works without Mapbox token
-        initial_view_state=pdk.ViewState(
-            latitude=df_map_filtered["latitude"].mean(),
-            longitude=df_map_filtered["longitude"].mean(),
-            zoom=2,
-            pitch=0,
-        ),
-        layers=[
-            pdk.Layer(
-                "ScatterplotLayer",
-                data=df_map_filtered,
-                get_position=["longitude", "latitude"],
-                get_fill_color="color",
-                get_radius=50000,
-                pickable=True,
-            )
-        ],
-        tooltip={
-            "html": "<b>{title}</b><br>Source: {source}<br>Type: {event_type}<br>Location: {location}",
-            "style": {"color": "white"}
-        },
-    )
-    st.pydeck_chart(deck)
+    # Initialize map at the center of all events
+    center_lat = df_map_filtered["latitude"].mean()
+    center_lon = df_map_filtered["longitude"].mean()
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=2, tiles="CartoDB positron")
+
+    # Add markers
+    for _, row in df_map_filtered.iterrows():
+        color = color_map.get(row['event_type'], 'gray')
+        popup_html = f"""
+        <b>{row['title']}</b><br>
+        Source: {row['source']}<br>
+        Type: {row['event_type']}<br>
+        Location: {row['location']}<br>
+        <a href="{row['link']}" target="_blank">Read Article</a>
+        """
+        folium.CircleMarker(
+            location=[row['latitude'], row['longitude']],
+            radius=7,
+            color=color,
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.7,
+            popup=folium.Popup(popup_html, max_width=300)
+        ).add_to(m)
+
+    # Display Folium map in Streamlit
+    st_data = st_folium(m, width=1200, height=600)
 else:
     st.write("No events match the selected filters.")
-
-# ─────────────────────────────
-
