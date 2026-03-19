@@ -14,10 +14,9 @@ st.title("🌍 Latest Geopolitical RSS Updates Map")
 st.markdown("Groq AI used for geo location extraction and activity categorisation")
 
 # ─────────────────────────────
-# Load dataset
-DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTB-ky1OX6k80KLH-tqBfVvJI2mw_EblSsJaSLjhyPwtWKq_HHK6s7cwYwXj3GAUyA1XbPB4LsPCUbi/pub?output=csv"
+DATA_URL = "https://drive.google.com/uc?export=download&id=1mU9wEJBrUMidZmeVkXtIPVYL6WCDQp9q"
 
-@st.cache_data
+@st.cache_data(ttl=300)  # cache for 5 minutes
 def load_data(url):
     df = pd.read_csv(url)
     return df
