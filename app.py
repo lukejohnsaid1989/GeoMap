@@ -13,7 +13,7 @@ st.title("🌍 Geopolitical Events Map")
 st.markdown("Interactive map of geopolitical events with filters and clickable links.")
 
 # ─────────────────────────────
-# Load data from Google Sheets CSV
+# Load dataset
 DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT8RR2iblV2jx-tt5lUTVzrGM5Kcb_JX-yknDp2KnfUhhe_Aep_kUN1GsSva6GtnLE2vslsXnxp0o5V/pub?output=csv"
 
 @st.cache_data
@@ -31,6 +31,7 @@ df_map = df_map[(df_map["latitude"] != 0) & (df_map["longitude"] != 0)]
 # ─────────────────────────────
 # Sidebar filters
 st.sidebar.header("Filters")
+
 event_types = df_map['event_type'].dropna().unique().tolist()
 selected_types = st.sidebar.multiselect("Select event types:", event_types, default=event_types)
 
@@ -41,7 +42,7 @@ selected_sources = st.sidebar.multiselect("Select sources:", sources, default=so
 df_map_filtered = df_map[
     (df_map['event_type'].isin(selected_types)) &
     (df_map['source'].isin(selected_sources))
-]
+].copy()  # avoid SettingWithCopyWarning
 
 # Color mapping by event type
 color_map = {
@@ -57,7 +58,7 @@ df_map_filtered['color'] = df_map_filtered['event_type'].map(lambda x: color_map
 st.subheader("Map View")
 if not df_map_filtered.empty:
     deck = pdk.Deck(
-        map_style="mapbox://styles/mapbox/light-v10",
+        map_style="road",  # default map style works without Mapbox token
         initial_view_state=pdk.ViewState(
             latitude=df_map_filtered["latitude"].mean(),
             longitude=df_map_filtered["longitude"].mean(),
@@ -75,10 +76,22 @@ if not df_map_filtered.empty:
             )
         ],
         tooltip={
-            "html": "<b>{title}</b><br>Source: {source}<br>Type: {event_type}<br>Location: {location}<br><a href='{link}' target='_blank'>Read Article</a>",
+            "html": "<b>{title}</b><br>Source: {source}<br>Type: {event_type}<br>Location: {location}",
             "style": {"color": "white"}
         },
     )
     st.pydeck_chart(deck)
 else:
     st.write("No events match the selected filters.")
+
+# ─────────────────────────────
+# Display table with clickable links
+st.subheader("Event Table")
+if not df_map_filtered.empty:
+    df_display = df_map_filtered.copy()
+    df_display["link"] = df_display["link"].apply(
+        lambda x: f"[Read Article]({x})" if pd.notnull(x) and x.strip() != "" else ""
+    )
+    st.write(df_display[["title", "event_type", "source", "location", "link"]])
+else:
+    st.write("No events to display.")
