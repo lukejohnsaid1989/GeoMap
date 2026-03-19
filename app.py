@@ -9,8 +9,8 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🌍 Geopolitical Events Map")
-st.markdown("Interactive map of geopolitical events with filters and clickable links.")
+st.title("🌍 Latest RSS Updates Map")
+st.markdown("Groq AI used for geo location extraction and activity categorisation")
 
 # ─────────────────────────────
 # Load dataset
@@ -85,13 +85,4 @@ else:
     st.write("No events match the selected filters.")
 
 # ─────────────────────────────
-# Display table with clickable links
-st.subheader("Event Table")
-if not df_map_filtered.empty:
-    df_display = df_map_filtered.copy()
-    df_display["link"] = df_display["link"].apply(
-        lambda x: f"[Read Article]({x})" if pd.notnull(x) and x.strip() != "" else ""
-    )
-    st.write(df_display[["title", "event_type", "source", "location", "link"]])
-else:
-    st.write("No events to display.")
+
