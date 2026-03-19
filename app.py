@@ -15,7 +15,7 @@ st.markdown("Groq AI used for geo location extraction and activity categorisatio
 
 # ─────────────────────────────
 # Load dataset
-DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT8RR2iblV2jx-tt5lUTVzrGM5Kcb_JX-yknDp2KnfUhhe_Aep_kUN1GsSva6GtnLE2vslsXnxp0o5V/pub?output=csv"
+DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTB-ky1OX6k80KLH-tqBfVvJI2mw_EblSsJaSLjhyPwtWKq_HHK6s7cwYwXj3GAUyA1XbPB4LsPCUbi/pub?output=csv"
 
 @st.cache_data
 def load_data(url):
