@@ -23,6 +23,8 @@ def load_data(url):
 
 df = load_data(DATA_URL)
 
+latest_update = df["timestamp"].iloc[0]
+
 # ─────────────────────────────
 # Clean and filter valid coordinates
 df_map = df.dropna(subset=["latitude", "longitude"])
@@ -54,6 +56,8 @@ color_map = {
 # ─────────────────────────────
 # Create Folium map
 st.subheader("Map View")
+st.write(f"Latest update: {latest_update}")
+
 if not df_map_filtered.empty:
     # Initialize map at the center of all events
     center_lat = df_map_filtered["latitude"].mean()
