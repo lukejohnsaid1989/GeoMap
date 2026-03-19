@@ -23,7 +23,7 @@ def load_data(url):
 
 df = load_data(DATA_URL)
 
-latest_update = df["timestamp"].iloc[0]
+latest_update = df["latest_update"].iloc[0]
 
 # ─────────────────────────────
 # Clean and filter valid coordinates
