@@ -23,10 +23,6 @@ def load_data(url):
 
 df = load_data(DATA_URL)
 
-# Show raw dataset
-st.subheader("Raw Data")
-st.dataframe(df)
-
 # ─────────────────────────────
 # Clean and filter for valid coordinates
 df_map = df.dropna(subset=["latitude", "longitude"])
@@ -64,7 +60,3 @@ if not df_map.empty:
 else:
     st.write("No valid geographic data found.")
 
-# ─────────────────────────────
-# Detailed table of plotted events
-st.subheader("Event Details")
-st.dataframe(df_map)
