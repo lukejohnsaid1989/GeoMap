@@ -82,8 +82,3 @@ if not df_map_filtered.empty:
     st.pydeck_chart(deck)
 else:
     st.write("No events match the selected filters.")
-
-# ─────────────────────────────
-# Event details table
-st.subheader("Event Details")
-st.dataframe(df_map_filtered)
