@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 st.title("🌍 Geopolitical Events Map")
-st.markdown("This app loads your dataset from the Google Sheets CSV and visualizes events geographically.")
+st.markdown("Interactive map of geopolitical events with filters and clickable links.")
 
 # ─────────────────────────────
 # Load data from Google Sheets CSV
@@ -24,39 +24,66 @@ def load_data(url):
 df = load_data(DATA_URL)
 
 # ─────────────────────────────
-# Clean and filter for valid coordinates
+# Clean and filter valid coordinates
 df_map = df.dropna(subset=["latitude", "longitude"])
 df_map = df_map[(df_map["latitude"] != 0) & (df_map["longitude"] != 0)]
 
 # ─────────────────────────────
+# Sidebar filters
+st.sidebar.header("Filters")
+event_types = df_map['event_type'].dropna().unique().tolist()
+selected_types = st.sidebar.multiselect("Select event types:", event_types, default=event_types)
+
+sources = df_map['source'].dropna().unique().tolist()
+selected_sources = st.sidebar.multiselect("Select sources:", sources, default=sources)
+
+# Apply filters
+df_map_filtered = df_map[
+    (df_map['event_type'].isin(selected_types)) &
+    (df_map['source'].isin(selected_sources))
+]
+
+# Color mapping by event type
+color_map = {
+    'conflict': [255, 0, 0, 160],    # Red
+    'military': [0, 0, 255, 160],    # Blue
+    'diplomacy': [0, 255, 0, 160],   # Green
+}
+
+df_map_filtered['color'] = df_map_filtered['event_type'].map(lambda x: color_map.get(x, [200, 200, 200, 160]))
+
+# ─────────────────────────────
 # Map visualization
 st.subheader("Map View")
-
-if not df_map.empty:
+if not df_map_filtered.empty:
     deck = pdk.Deck(
         map_style="mapbox://styles/mapbox/light-v10",
         initial_view_state=pdk.ViewState(
-            latitude=df_map["latitude"].mean(),
-            longitude=df_map["longitude"].mean(),
+            latitude=df_map_filtered["latitude"].mean(),
+            longitude=df_map_filtered["longitude"].mean(),
             zoom=2,
             pitch=0,
         ),
         layers=[
             pdk.Layer(
                 "ScatterplotLayer",
-                data=df_map,
+                data=df_map_filtered,
                 get_position=["longitude", "latitude"],
-                get_color="[255, 0, 0, 140]",
+                get_fill_color="color",
                 get_radius=50000,
                 pickable=True,
             )
         ],
         tooltip={
-            "text": "{title}\nSource: {source}\nType: {event_type}\nLocation: {location}"
+            "html": "<b>{title}</b><br>Source: {source}<br>Type: {event_type}<br>Location: {location}<br><a href='{link}' target='_blank'>Read Article</a>",
+            "style": {"color": "white"}
         },
     )
-
     st.pydeck_chart(deck)
 else:
-    st.write("No valid geographic data found.")
+    st.write("No events match the selected filters.")
 
+# ─────────────────────────────
+# Event details table
+st.subheader("Event Details")
+st.dataframe(df_map_filtered)
