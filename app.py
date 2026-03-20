@@ -73,6 +73,7 @@ if not df_map_filtered.empty:
         Type: {row['event_type']}<br>
         Location: {row['location']}<br>
         Timestamp: {row['timestamp']}<br>
+        Malta impact: {row['malta_impact']}<br>
         <a href="{row['link']}" target="_blank">Read Article</a>
         """
         folium.CircleMarker(
