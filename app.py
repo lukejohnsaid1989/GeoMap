@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🌍 50 Latest Geopolitical RSS Updates Map")
+st.title("🌍 Latest Geopolitical RSS Updates Map")
 st.markdown("Groq AI used for geo location extraction and activity categorisation")
 
 # ─────────────────────────────
