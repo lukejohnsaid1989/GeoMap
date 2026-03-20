@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 st.title("🌍 Latest Geopolitical RSS Updates Map + Malta Impact Assessmnt")
-st.markdown("Groq AI used for geo location extraction, activity categorisation (Agent 1) and Malta Impact Assessment (Agent 2)")
+st.markdown("Groq AI 🧠 used for geo location extraction 📍 and activity categorisation ⚔️ (Agent 1 🤖) and Malta ✠ Impact Assessment (Agent 2 👾).")
 
 # ─────────────────────────────
 DATA_URL = "https://drive.google.com/uc?export=download&id=1mU9wEJBrUMidZmeVkXtIPVYL6WCDQp9q"
