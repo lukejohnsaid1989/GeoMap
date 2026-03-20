@@ -91,33 +91,44 @@ if not df_map_filtered.empty:
 else:
     st.write("No events match the selected filters.")
 
+# Top Impact Events
 if "level_of_impact" in df_map_filtered.columns:
-    if 1==1:
-        df_top = (
-            df_map_filtered
-            .dropna(subset=["level_of_impact"])
-            .sort_values(by="level_of_impact", ascending=False)
-            .query(""" level_of_impact >= 7 """)
-        )
-        if df_top:
-    
-            # Top 5 Highest Impact Events
-            st.subheader("🚨 Top Impact on Malta")
-        
-            for i, row in df_top.iterrows():
-                st.markdown(f"""
-                ### {row['title']}
-                **Impact Level:** {row['level_of_impact']} 
-                **Type:** {row['event_type']}  
-                **Location:** {row['location']}  
-                **Source:** {row['source']}  
-        
-                [Read full article]({row['link']})
-                ---
-                """)
-        else:
-            st.write("No articles with high impact to Malta")
+
+    # Ensure numeric
+    df_map_filtered["level_of_impact"] = pd.to_numeric(
+        df_map_filtered["level_of_impact"], errors="coerce"
+    )
+
+    df_top = (
+        df_map_filtered
+        .dropna(subset=["level_of_impact"])
+        .query("level_of_impact >= 7")
+        .sort_values(by="level_of_impact", ascending=False)
+        .head(5)
+    )
+
+    if not df_top.empty:
+
+        st.subheader("🚨 Top Impact on Malta")
+
+        for _, row in df_top.iterrows():
+
+            st.markdown(f"### {row['title']}")
+
+            st.progress(min(int(row["level_of_impact"]), 10) / 10)
+
+            st.markdown(f"""
+            **Impact Level:** {row['level_of_impact']} / 10  
+            **Type:** {row['event_type']}  
+            **Location:** {row['location']}  
+            **Source:** {row['source']}  
+
+            [Read full article]({row['link']})
+            ---
+            """)
+
     else:
-        pass
+        st.info("No high-impact events (≥7) right now.")
+
 else:
     st.warning("No impact data available.")
