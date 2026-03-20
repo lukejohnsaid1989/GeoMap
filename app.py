@@ -61,7 +61,7 @@ st.write(f"Latest update: {latest_update}")
 if not df_map_filtered.empty:
     # Center on Middle East
     center_lat = 25
-    center_lon = 45
+    center_lon = 55
     
     m = folium.Map(location=[center_lat, center_lon], zoom_start=3, tiles="CartoDB positron")
     
