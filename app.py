@@ -59,10 +59,18 @@ st.subheader("Map View")
 st.write(f"Latest update: {latest_update}")
 
 if not df_map_filtered.empty:
-    # Initialize map at the center of all events
-    center_lat = df_map_filtered["latitude"].mean()
-    center_lon = df_map_filtered["longitude"].mean()
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=2, tiles="CartoDB positron")
+    # Center on Middle East
+    center_lat = 25
+    center_lon = 45
+    
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=4, tiles="CartoDB positron")
+    
+    # Add Malta marker
+    folium.Marker(
+        location=[35.9375, 14.3754],
+        popup="🇲🇹 Malta",
+        icon=folium.Icon(color="green")
+    ).add_to(m)
 
     # Add markers
     for _, row in df_map_filtered.iterrows():
