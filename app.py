@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🌍 Latest Geopolitical RSS Updates Map")
+st.title("🌍 50 Latest Geopolitical RSS Updates Map")
 st.markdown("Groq AI used for geo location extraction and activity categorisation")
 
 # ─────────────────────────────
@@ -72,6 +72,7 @@ if not df_map_filtered.empty:
         Source: {row['source']}<br>
         Type: {row['event_type']}<br>
         Location: {row['location']}<br>
+        Timestamp: {row['timestamp']}<br>
         <a href="{row['link']}" target="_blank">Read Article</a>
         """
         folium.CircleMarker(
