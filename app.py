@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🌍 Latest Geopolitical RSS Updates Map + Malta Impact Assessmnt")
+st.title("🌍 Latest Geopolitical RSS Updates + Malta Impact Assessment")
 st.markdown("Groq AI 🧠 used for geo location extraction 📍 and activity categorisation ⚔️ (Agent 1 🤖) and Malta ✠ Impact Assessment (Agent 2 👾).")
 
 # ─────────────────────────────
