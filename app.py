@@ -63,7 +63,7 @@ if not df_map_filtered.empty:
     center_lat = 25
     center_lon = 45
     
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=4, tiles="CartoDB positron")
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=3, tiles="CartoDB positron")
     
     # Add Malta marker
     folium.Marker(
