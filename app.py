@@ -74,6 +74,7 @@ if not df_map_filtered.empty:
         Location: {row['location']}<br>
         Timestamp: {row['timestamp']}<br>
         Malta impact: {row['description']}<br>
+        Level of impact: {row['level_of_impact']}<br>
         <a href="{row['link']}" target="_blank">Read Article</a>
         """
         folium.CircleMarker(
