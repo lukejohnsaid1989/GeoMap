@@ -90,3 +90,28 @@ if not df_map_filtered.empty:
     st_data = st_folium(m, width=1200, height=600)
 else:
     st.write("No events match the selected filters.")
+
+if "level_of_impact" in df_map_filtered.columns:
+    # Top 5 Highest Impact Events
+    st.subheader("🚨 Top Impact on Malta")
+
+    df_top = (
+        df_map_filtered
+        .dropna(subset=["level_of_impact"])
+        .sort_values(by="level_of_impact", ascending=False)
+        .query(""" level_of_impact >= 7 """)
+    )
+
+    for i, row in df_top.iterrows():
+        st.markdown(f"""
+        ### {row['title']}
+        **Impact Level:** {row['level_of_impact']} 
+        **Type:** {row['event_type']}  
+        **Location:** {row['location']}  
+        **Source:** {row['source']}  
+
+        [Read full article]({row['link']})
+        ---
+        """)
+else:
+    st.warning("No impact data available.")
