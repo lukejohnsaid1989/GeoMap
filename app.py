@@ -122,6 +122,7 @@ if "level_of_impact" in df_map_filtered.columns:
             **Type:** {row['event_type']}  
             **Location:** {row['location']}  
             **Source:** {row['source']}  
+            **Reason of impact:** {row['description']}  
 
             [Read full article]({row['link']})
             ---
